@@ -1,20 +1,37 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <assert.h>
+#include <ctype.h>
 
+const double EPS = 1e-8;
 
 enum Flags {
-    INF_SOL = 3
+    NULL_ROOTS,
+    ONE_ROOT,
+    TWO_ROOTS,
+    INF_SOL,
 };
+
+int isNull(double);
+int solLineyka(double, double, double*);
+int solKvadratka(double, double, double, double*, double*);
+void pretyPrintRoots(int, double, double);
+void readAllChars();
+
+int isNull(double a)
+{
+    return abs(a) < EPS;
+}
 
 int solLineyka(double b, double c, double* px)
 {
     assert(std::isfinite(b));
     assert(std::isfinite(c));
     assert(px != NULL);
-    if (b == 0)
+    if (isNull(b))
     {
-        if (c == 0)
+        if (isNull(c))
         {
             return INF_SOL;
         }
@@ -35,11 +52,11 @@ int solKvadratka(double a, double b, double c, double* px1, double* px2)
     assert(px1 != NULL);
     assert(px2 != NULL);
     assert(px1 != px2);
-    if (a == 0)
+    if (isNull(a))
     {
-        if (b == 0)
+        if (isNull(b))
         {
-            if (c == 0)
+            if (isNull(c))
             {
                 return INF_SOL;
             }
@@ -53,17 +70,17 @@ int solKvadratka(double a, double b, double c, double* px1, double* px2)
             return solLineyka(b, c, px1);
         }
     }
-    double d = (b * b) - (4 * a * c);
-    if (d < 0)
-    {
-        return 0;
-    }
-    if (d == 0)
+    double d = b * b - 4 * a * c;
+    if (isNull(d))
     {
         *px1 = -b / (2 * a);
         return 1;
     }
-    if (d > 0)
+    if (d < 0)
+    {
+        return 0;
+    }
+    else
     {
         *px1 = (-b + sqrt(d)) / (2 * a);
         *px2 = (-b - sqrt(d)) / (2 * a);
@@ -71,28 +88,17 @@ int solKvadratka(double a, double b, double c, double* px1, double* px2)
     }
 }
 
-
-
-int main()
+void pretyPrintRoots(int nRoots, double x1, double x2)
 {
-    double a = NAN, b = NAN, c = NAN; //коэффициенты квадратного уравнения
-    double x1 = NAN, x2 = NAN;  //корни уравнения
-    int nRoots = 0; //количество корней уравнения
-    printf("Для завершения программы нажмите Ctrl + C\n");
-    while (1)
-    {
-        printf("Введите коэффициенты квадратного уравнения: ");
-        scanf("%lg %lg %lg", &a, &b, &c);
-        nRoots = solKvadratka(a, b, c, &x1, &x2);
-        switch(nRoots)
+    switch(nRoots)
         {
-            case 0:
+            case NULL_ROOTS:
                 printf("Уравнение не имеет корней\n");
                 break;
-            case 1:
+            case ONE_ROOT:
                 printf("Уравнение имеет один корень: x = %.2lf\n", x1);
                 break;
-            case 2:
+            case TWO_ROOTS:
                 printf("Уравнение имеет два корня: x1 = %.2lf, x2 = %.2lf\n", x1, x2);
                 break;
             case INF_SOL:
@@ -101,5 +107,36 @@ int main()
             default:
                 printf("Программа завершилась с ошибкой :(\n");
         }
+}
+
+
+void readAllChars()
+{
+    int c;
+    while ((c = getchar()) != EOF && isspace(c));
+}
+
+
+
+int main()
+{
+    double a = NAN, b = NAN, c = NAN; //коэффициенты квадратного уравнения
+    double x1 = NAN, x2 = NAN;        //корни уравнения
+    int nRoots = 0;                   //количество корней уравнения
+    int nCoeficients = 0;             //количество считанных коэффициентов уравнения
+    printf("Для завершения программы нажмите Ctrl + C\n");
+    while (true)
+    {
+        printf("Введите коэффициенты квадратного уравнения: ");
+        nCoeficients = scanf("%lg %lg %lg", &a, &b, &c);
+        if (nCoeficients != 3)
+        {
+            readAllChars();
+            printf("\nВведите нормальные значения\n");
+            continue;
+
+        }
+        nRoots = solKvadratka(a, b, c, &x1, &x2);
+        pretyPrintRoots(nRoots, x1, x2);
     }
 }
