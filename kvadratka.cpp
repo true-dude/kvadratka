@@ -113,7 +113,7 @@ void pretyPrintRoots(int nRoots, double x1, double x2)
 void readAllChars()
 {
     int c;
-    while ((c = getchar()) != EOF && isspace(c));
+    while ((c = getchar()) != EOF && !isspace(c));
 }
 
 
@@ -134,7 +134,6 @@ int main()
             readAllChars();
             printf("\nВведите нормальные значения\n");
             continue;
-
         }
         nRoots = solKvadratka(a, b, c, &x1, &x2);
         pretyPrintRoots(nRoots, x1, x2);
