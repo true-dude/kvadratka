@@ -3,8 +3,11 @@
 #include <math.h>
 #include <assert.h>
 #include <ctype.h>
+#include <string.h>
 
 const double EPS = 1e-8;
+const int MAXSIZE = 1000;
+
 
 enum Flags {
     NULL_ROOTS,
@@ -18,6 +21,7 @@ int solLineyka(double, double, double*);
 int solKvadratka(double, double, double, double*, double*);
 void pretyPrintRoots(int, double, double);
 void readAllChars();
+int find_quit();
 
 int isNull(double a)
 {
@@ -113,9 +117,15 @@ void pretyPrintRoots(int nRoots, double x1, double x2)
 void readAllChars()
 {
     int c;
-    while ((c = getchar()) != EOF && !isspace(c));
+    while ((c = getchar()) != EOF && c != '\n');
 }
 
+int find_quit()
+{
+    char s[MAXSIZE];
+    scanf("%s", s);
+    return strcmp(s, "quit") == 0;
+}
 
 
 int main()
@@ -124,15 +134,19 @@ int main()
     double x1 = NAN, x2 = NAN;        //корни уравнения
     int nRoots = 0;                   //количество корней уравнения
     int nCoeficients = 0;             //количество считанных коэффициентов уравнения
-    printf("Для завершения программы нажмите Ctrl + C\n");
+    printf("Для завершения программы введите quit\n");
     while (true)
     {
         printf("Введите коэффициенты квадратного уравнения: ");
         nCoeficients = scanf("%lg %lg %lg", &a, &b, &c);
         if (nCoeficients != 3)
         {
+            if (find_quit())
+            {
+                break;
+            }
             readAllChars();
-            printf("\nВведите нормальные значения\n");
+            printf("Введите нормальные значения\n");
             continue;
         }
         nRoots = solKvadratka(a, b, c, &x1, &x2);
