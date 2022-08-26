@@ -1,7 +1,10 @@
+#ifndef H_MYLIB
+#define H_MYLIB
+
 int isNull(double);
 void pretyPrintRoots(int, double, double);
 void clearBuffer();
-int find_quit();
+int findQuit();
 void test_SK();
 void test_case(double, double, double, int, double, double);
 int compareDouble(double, double);
@@ -20,3 +23,5 @@ enum NumberOfRoots {
     WRONG = 0,
     CORRECT= 1
 };
+
+#endif
