@@ -1,88 +1,75 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <assert.h>
-#include <ctype.h>
-#include <string.h>
-#include <ctype.h>
-#include <string.h>
-#include "mylib.h"
+#include "tests.h"
+#include "solvers.h"
+#include "comp.h"
 
-const int SIX_ARGUMENTS = 6;
-const char* RED = "\033[1;31m";
 
-/*!
----------------------------------------------
-Tests solveKvadratka()
----------------------------------------------
-*/
-void test_SK()
+int testSK()
 {
     char fileName[] = "tests.txt";
     FILE* fp = fopen(fileName, "r");
+
     if (fp == NULL)
     {
-        printf("%sFile %s not found\n", RED, fileName);
-        abort();
+        printf(RED "File %s not found\n", RED, fileName);
+        return FILE_OPEN_ERROR;
     }
 
-    int tnRoots = 0;
+    int right_n_roots = 0;
     double a_coef = NAN, b_coef = NAN, c_coef = NAN;
-    double tx1 = NAN, tx2 = NAN;
-    int n = 0;
-    while ((n = fscanf(fp, "%lg %lg %lg %d %lg %lg", &a_coef, &b_coef, &c_coef, &tnRoots, &tx1, &tx2)) != EOF &&
-            n == SIX_ARGUMENTS)
+    double right_x1 = NAN, right_x2 = NAN;
+
+    do
     {
-        test_case(a_coef, b_coef, c_coef, tnRoots, tx1, tx2);
-    }
+        int num_of_args = fscanf(fp, "%lg %lg %lg %d %lg %lg", &a_coef, &b_coef, &c_coef, &right_n_roots, &right_x1, &right_x2);
+        testCase(a_coef, b_coef, c_coef, right_n_roots, right_x1, right_x2);
+        if (num_of_args == EOF || num_of_args != SIX_ARGUMENTS)
+        {
+            break;
+        }
+    } while (true);
 
     fclose(fp);
+
+    return SUCCESSFUL_TESTING;
 }
 
-/*!
----------------------------------------------
-Tests a single case
 
-\param a-coef  a-coeficient
-\param b-coef  b-coeficient
-\param c-coef  c-coeficient
-\param tnRoots correct number of roots
-\param tx1     correct value of the 1-st root
-\param tx2     correct value of the 2-nd root
-\return Test status
-
----------------------------------------------
-*/
-void test_case(double a_coef, double b_coef, double c_coef, int tnRoots, double tx1, double tx2)
+void testCase(double a_coef, double b_coef, double c_coef, int right_n_roots, double right_x1, double right_x2)
 {
     double x1 = NAN, x2 = NAN;
-    int nRoots = solveKvadratka(a_coef, b_coef, c_coef, &x1, &x2);
-    int status = CORRECT;
+    int n_roots = solveKvadratka(a_coef, b_coef, c_coef, &right_x1, &right_x2);
 
-    if (nRoots != tnRoots)
+    int status_case = CORRECT;
+
+    if (right_n_roots != n_roots)
     {
-        status = WRONG;
+        status_case = WRONG;
     }
 
-    switch (nRoots)
+    switch (right_n_roots)
     {
         case ONE_ROOT:
-            status = (compareDouble(x1, tx1)) ? CORRECT : WRONG;
+            status_case = (compareDouble(x1, right_x1)) ? CORRECT : WRONG;
             break;
 
         case TWO_ROOTS:
-            status = (compareDouble(x1, tx1) && compareDouble(x2, tx2)) ? CORRECT : WRONG;
+            status_case = (compareDouble(x1, right_x1) && compareDouble(x2, right_x2)) ? CORRECT : WRONG;
             break;
 
         default:
-            status = CORRECT;
+            printf("The number of roots is correct, but the roots themselves are wrong\n");
     }
 
-    if (status == WRONG)
+    if (status_case == WRONG)
     {
-        printf("%sFailed:   nRoots = %d, x1 = %lg, x2 = %lg\n"
+        printf(RED "Failed: nRoots = %d, x1 = %lg, x2 = %lg\n"
                "Expected: nRoots = %d, x1 = %lg, x2 = %lg\n"
-             "With arguments a = %lg, b = %lg, c = %lg\n",
-             RED, nRoots, x1, x2, tnRoots, tx1, tx2, a_coef, b_coef, c_coef);
+               "With arguments a = %lg, b = %lg, c = %lg\n",
+                n_roots, x1, x2,
+                right_n_roots, right_x1, right_x2,
+                a_coef, b_coef, c_coef);
     }
 }
