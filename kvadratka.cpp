@@ -9,10 +9,9 @@
 #include "parse_cmd.h"
 
 
-
 void parseCmdLine(int argc, char *argv[])
 {
-    while (argc > 1)
+    if (argc > 1)
     {
 
         if (strcmp(argv[1], "-s") == 0)

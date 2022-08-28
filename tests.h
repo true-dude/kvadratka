@@ -1,7 +1,8 @@
 #ifndef H_TESTS
 #define H_TESTS
 
-#define RED "\033[1;31m"
+#define RED   "\033[1;31m"
+#define GREEN "\033[1;32m"
 
 const int SIX_ARGUMENTS = 6;
 

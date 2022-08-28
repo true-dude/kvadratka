@@ -1,6 +1,9 @@
 #ifndef H_COMP
 #define H_COMP
 
+const double EPS = 1e-8;
+
+
 /*!
 ---------------------------------------------
 Compares two numbers double type

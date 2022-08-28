@@ -3,8 +3,6 @@
 #include<math.h>
 #include "comp.h"
 
-const double EPS = 1e-8;
-
 
 int isZero(double a)
 {

@@ -4,12 +4,15 @@
 #define MAXSIZE 1000
 #define YELLOW  "\033[1;33m"
 
-enum InputStatus
+
+enum INPUT_STATUS
 {
     END_OF_INPUT,
     CONTINUE_OF_INPUT,
     ERROR_OF_INPUT
 };
+
+const int CORRECT_NUMBER_OF_COEF = 3;
 
 /*!
 -----------------------------------
@@ -29,7 +32,7 @@ Produces formatted output depending on the number of roots
 
 ------------------------------------
 */
-void pretyPrintRoots(int, double, double);
+void prettyPrintRoots(int, double, double);
 
 
 /*!

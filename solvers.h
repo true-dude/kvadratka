@@ -12,6 +12,7 @@ Swaps values
 */
 void swap(double* a, double* b);
 
+
 /*!
 --------------------------------------------
 For the given coefficients of the linearal equation b c looks for its roots and writes x

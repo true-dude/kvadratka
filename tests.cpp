@@ -13,7 +13,7 @@ int testSK()
 
     if (fp == NULL)
     {
-        printf(RED "File %s not found\n", RED, fileName);
+        printf(RED "File %s not found\n", fileName);
         return FILE_OPEN_ERROR;
     }
 
@@ -23,12 +23,23 @@ int testSK()
 
     do
     {
-        int num_of_args = fscanf(fp, "%lg %lg %lg %d %lg %lg", &a_coef, &b_coef, &c_coef, &right_n_roots, &right_x1, &right_x2);
+        int num_of_args = fscanf(fp, "%lg %lg %lg %d %lg %lg",
+                                &a_coef, &b_coef, &c_coef, &right_n_roots, &right_x1, &right_x2);
+        printf("%d\n", right_n_roots);
         testCase(a_coef, b_coef, c_coef, right_n_roots, right_x1, right_x2);
-        if (num_of_args == EOF || num_of_args != SIX_ARGUMENTS)
+
+        if (num_of_args == EOF)
         {
+            printf(GREEN "Testing completed\n");
             break;
         }
+
+        if (num_of_args != SIX_ARGUMENTS)
+        {
+            printf(RED "File read error\n");
+            break;
+        }
+
     } while (true);
 
     fclose(fp);
@@ -40,7 +51,7 @@ int testSK()
 void testCase(double a_coef, double b_coef, double c_coef, int right_n_roots, double right_x1, double right_x2)
 {
     double x1 = NAN, x2 = NAN;
-    int n_roots = solveKvadratka(a_coef, b_coef, c_coef, &right_x1, &right_x2);
+    int n_roots = solveKvadratka(a_coef, b_coef, c_coef, &x1, &x2);
 
     int status_case = CORRECT;
 
@@ -59,17 +70,31 @@ void testCase(double a_coef, double b_coef, double c_coef, int right_n_roots, do
             status_case = (compareDouble(x1, right_x1) && compareDouble(x2, right_x2)) ? CORRECT : WRONG;
             break;
 
+        case INF_SOL:
+            status_case = (compareDouble(x1, right_x1) && compareDouble(x2, right_x2)) ? CORRECT : WRONG;
+            break;
+
+        case NULL_ROOTS:
+            status_case = (compareDouble(x1, right_x1) && compareDouble(x2, right_x2)) ? CORRECT : WRONG;
+            break;
+
         default:
-            printf("The number of roots is correct, but the roots themselves are wrong\n");
+            printf(RED "Indefinite number of roots\n");
+    }
+
+    if (status_case == CORRECT)
+    {
+        printf(GREEN "Testing with arguments a = %lg, b = %lg, c = %lg passed succesfuly\n",
+                                             a_coef,  b_coef,   c_coef);
     }
 
     if (status_case == WRONG)
     {
         printf(RED "Failed: nRoots = %d, x1 = %lg, x2 = %lg\n"
-               "Expected: nRoots = %d, x1 = %lg, x2 = %lg\n"
-               "With arguments a = %lg, b = %lg, c = %lg\n",
-                n_roots, x1, x2,
-                right_n_roots, right_x1, right_x2,
-                a_coef, b_coef, c_coef);
+                   "Expected: nRoots = %d, x1 = %lg, x2 = %lg\n"
+                   "With coeficients a = %lg, b = %lg, c = %lg\n",
+                   n_roots, x1, x2,
+                   right_n_roots, right_x1, right_x2,
+                   a_coef, b_coef, c_coef);
     }
 }

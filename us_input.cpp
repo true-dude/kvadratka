@@ -44,13 +44,15 @@ void startSolveKvadratka()
 
     int status_of_input = userInput(&a_coef, &b_coef, &c_coef);
 
-    while (status_of_input != END_OF_INPUT )
+    while (status_of_input != END_OF_INPUT)
     {
         if (status_of_input == CONTINUE_OF_INPUT)
         {
             n_roots = solveKvadratka(a_coef, b_coef, c_coef, &x1, &x2);
-            pretyPrintRoots(n_roots, x1, x2);
+            prettyPrintRoots(n_roots, x1, x2);
         }
+
+        status_of_input = userInput(&a_coef, &b_coef, &c_coef);
     }
 
 }
@@ -59,9 +61,10 @@ void startSolveKvadratka()
 int userInput(double* pa_coef, double* pb_coef, double* pc_coef)
 {
     printf("Enter the coefficients of the quadratic equation: ");
-    int nCoeficients = scanf("%lg %lg %lg", pa_coef, pb_coef, pc_coef); //number of equation coefficients read
 
-    if (nCoeficients != 3)
+    int n_coeficients = scanf("%lg %lg %lg", pa_coef, pb_coef, pc_coef); //number of equation coefficients read
+
+    if (n_coeficients != CORRECT_NUMBER_OF_COEF)
     {
         if (findQuit())
         {
@@ -71,7 +74,7 @@ int userInput(double* pa_coef, double* pb_coef, double* pc_coef)
         clearBuffer();
 
         printf("Enter normal values\n"
-        "For example: 1.4 3 -5.4\n");
+               "For example: 1.4 3 -5.4\n");
 
         return ERROR_OF_INPUT;
     }
@@ -85,6 +88,7 @@ int userInput(double* pa_coef, double* pb_coef, double* pc_coef)
 void clearBuffer()
 {
     int c = getchar();
+
     while (c != EOF && c != '\n')
     {
         c = getchar();
@@ -95,8 +99,8 @@ void clearBuffer()
 int findQuit()
 {
     char s[MAXSIZE] = {0};
-    scanf("%*s", MAXSIZE, s);
+    scanf("%s", s);
 
     char quit_flag[] = "quit";
-    return strcmp(s, quit_flag) == 0;
+    return (strcmp(s, quit_flag) == 0);
 }

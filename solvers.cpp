@@ -43,6 +43,9 @@ int solveKvadratka(double a_coef, double b_coef, double c_coef, double* px1, dou
 
     if (isZero(a_coef))
     {
+        *px1 = 0;
+        *px2 = 0;
+
         return solveLineyka(b_coef, c_coef, px1);
     }
 
@@ -51,11 +54,14 @@ int solveKvadratka(double a_coef, double b_coef, double c_coef, double* px1, dou
     if (isZero(D))
     {
         *px1 = -b_coef / (2 * a_coef);
-        return 1;
+
+        return ONE_ROOT;
     }
 
     if (D < 0)
     {
+        *px1 = 0;
+        *px2 = 0;
         return NULL_ROOTS;
     }
 
